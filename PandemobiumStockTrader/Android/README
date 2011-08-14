@@ -1,11 +1,11 @@
-Running Pandemobium README
-August 1st, 2011
-By Blake Bowen, Fang Yuan, Carla Sotomayor
+Pandemobium Stock Trader README
+Last updated August 13, 2011
+Original document by Blake Bowen, Fang Yuan, Carla Sotomayor
 
 Installation instructions for Eclipse and Java JDK can be found at:
 http://wiki.eclipse.org/Eclipse/Installation
 
-README for Pandemobium app for iPhone can be found in
+README for Pandemobium Stock Trader app for iPhone can be found in
 PANDEMOBIUM_HOME/iOS
 
 RUNNING PANDEMOBIUM FROM AN ECLIPSE-BASED IDE
