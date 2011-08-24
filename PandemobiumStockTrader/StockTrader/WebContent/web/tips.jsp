@@ -30,10 +30,10 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.util.*" %>
 <%@ page import="javax.xml.parsers.*" %>
-<%@ page import="org.w3c.dom.*, javax.xml.parsers.*" %>
+<%@ page import="org.w3c.dom.*,javax.xml.parsers.*" %>
 <%@ page import="org.w3c.dom.*" %>
 <%@ page import="org.xml.sax.*" %>
-
+<%@ page import="com.denimgroup.stocktrader.ConnectionManager" %>
 
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -47,124 +47,102 @@
 	I'm the the tips page.
 	This is where you can see sweet stock tips.  
 	</p>
-	
-	<%
-	Connection c = DriverManager.getConnection("jdbc:hsqldb:mem:stocktrader", "sa", "");
-    Statement s = c.createStatement();
-    
-    
-    String query = "select 1 from tips ";
-    System.out.println("\nQuery is: " + query);
-    ResultSet res = s.executeQuery(query);	 
-    
-    /*if(!res.next()){    	
-        s.executeUpdate("INSERT INTO tips (tip_creator, symbol, target_price, reason) VALUES (1000, 'AAPL', 888, 'for test') ");
-        s.executeUpdate("INSERT INTO tips (tip_creator, symbol, target_price, reason) VALUES (1001, 'FACE', 888, 'for test') ");
-        s.executeUpdate("INSERT INTO tips (tip_creator, symbol, target_price, reason) VALUES (1002, 'GOOG', 999, 'for test') ");
-    }*/
-    
-    query = "select logins.username, tips.symbol, tips.target_price, tips.reason from tips, logins where (logins.id = tips.tip_creator)";
-    System.out.println("\nQuery is: " + query);
-    res = s.executeQuery(query);
-    
-	String BASE_QUERY, BASE_URL, SERVICE, STORE, retVal = null;
-	String current_price = "0";
-	BASE_QUERY = "select Ask from yahoo.finance.quotes where symbol = ";
-	BASE_URL = "http://query.yahooapis.com/";
-	SERVICE = "v1/public/yql";
-	STORE = "store://datatables.org/alltableswithkeys";	
-	String yahoo_query, fullUrl; 	
-    %>
 	<p>
 		<table>
 			<tr>
 				<th>User</th><th>Stock</th><th>Target Price</th><th>TRADE!</th>
 			</tr>	
-			<% while(res.next()){   			    	
-				try {
-					String symbol = res.getString("symbol").toUpperCase();
-					System.out.println("symbol: " + symbol);															
-					yahoo_query = BASE_QUERY + "\"" + symbol + "\"";
-					fullUrl = BASE_URL + SERVICE + "?q=" + URLEncoder.encode(yahoo_query) + "&env=" + STORE;
-					
-					URL url = new URL(fullUrl);
-					URLConnection conn = url.openConnection();
-					DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-					DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();            
-					Document doc=docBuilder.parse(conn.getInputStream());              
-					
-					doc.getDocumentElement ().normalize ();
-					System.out.println ("Root element of the doc is " + 
-					     doc.getDocumentElement().getNodeName());
-					NodeList listOfNodes = doc.getElementsByTagName("results");
-					Node firstNode = listOfNodes.item(0);
-					System.out.println("1: " + firstNode.getNodeName());
-					
-					Element nextElement = (Element)firstNode;
-					NodeList nextList = nextElement.getChildNodes();
-					System.out.println("2: " + ((Node)nextList.item(0)).getNodeName());
-					
-					Node thirdNode = nextList.item(0);
-					Element thirdElement = (Element)thirdNode;
-					NodeList thirdList = thirdElement.getChildNodes();
-					Node lastNode = thirdList.item(0);
-					current_price = lastNode.getTextContent();
-					System.out.println("3: " + lastNode.getTextContent());
-					System.out.println("3: " + lastNode.getNodeName());
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (DOMException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ParserConfigurationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SAXException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}								
+			<%
+				String BASE_QUERY, BASE_URL, SERVICE, STORE, retVal = null;
+				String current_price = "0";
+				BASE_QUERY = "select Ask from yahoo.finance.quotes where symbol = ";
+				BASE_URL = "http://query.yahooapis.com/";
+				SERVICE = "v1/public/yql";
+				STORE = "store://datatables.org/alltableswithkeys";
+				String yahoo_query, fullUrl;
+				Statement s = null;
+				ResultSet res = null;
+				Connection conn = ConnectionManager.getManager().getConnection();
+				if (conn != null) {
+					s = conn.createStatement();
+					String query = "select logins.username, tips.symbol, tips.target_price, tips.reason from tips, logins where (logins.id = tips.tip_creator)";
+					System.out.println("\nQuery is: " + query);
+					res = s.executeQuery(query);
+				
+				while (res.next()) {
+					try {
+						String symbol = res.getString("symbol").toUpperCase();
+						System.out.println("symbol: " + symbol);
+						yahoo_query = BASE_QUERY + "\"" + symbol + "\"";
+						fullUrl = BASE_URL + SERVICE + "?q="
+								+ URLEncoder.encode(yahoo_query) + "&env=" + STORE;
+							URL url = new URL(fullUrl);
+						URLConnection urlConn = url.openConnection();
+						DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
+								.newInstance();
+						DocumentBuilder docBuilder = docBuilderFactory
+								.newDocumentBuilder();
+						Document doc = docBuilder.parse(urlConn.getInputStream());
+							doc.getDocumentElement().normalize();
+						System.out.println("Root element of the doc is "
+								+ doc.getDocumentElement().getNodeName());
+						NodeList listOfNodes = doc.getElementsByTagName("results");
+						Node firstNode = listOfNodes.item(0);
+						System.out.println("1: " + firstNode.getNodeName());
+							Element nextElement = (Element) firstNode;
+						NodeList nextList = nextElement.getChildNodes();
+						System.out.println("2: "
+								+ ((Node) nextList.item(0)).getNodeName());
+							Node thirdNode = nextList.item(0);
+						Element thirdElement = (Element) thirdNode;
+						NodeList thirdList = thirdElement.getChildNodes();
+						Node lastNode = thirdList.item(0);
+						current_price = lastNode.getTextContent();
+						System.out.println("3: " + lastNode.getTextContent());
+						System.out.println("3: " + lastNode.getNodeName());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 			%>
 			<tr>
-				<td><%= res.getString("username") %></td>
-				<td><%= res.getString("symbol") %></td>
-				<td><%= res.getString("target_price") %></td>
+				<td><%=res.getString("username")%></td>
+				<td><%=res.getString("symbol")%></td>
+				<td><%=res.getString("target_price")%></td>
 				<td>
-					<a href="trade://BUY?symbol=<%= res.getString("symbol")%>&shares=50&price=<%=current_price%>">Buy 50!</a>
-					<a href="trade://BUY?symbol=<%= res.getString("symbol")%>&shares=100&price=<%=current_price%>">Buy 100!</a>
+					<a href="trade://BUY?symbol=<%=res.getString("symbol")%>&shares=50&price=<%=current_price%>">Buy 50!</a>
+					<a href="trade://BUY?symbol=<%=res.getString("symbol")%>&shares=100&price=<%=current_price%>">Buy 100!</a>
 				</td>
-				<td><%= res.getString("reason") %></td>
+				<td><%=res.getString("reason")%></td>
 			</tr>	
-			<% } %>	
+		<%}%>	<!--  end while -->
 		</table>
 	</p>
-	
-	<% 
-		String query2 = "SELECT 1 from tips ";
-	    System.out.println("\nQuery is: " + query2);
-	    ResultSet res2 = s.executeQuery(query2);%>	 
-	<%  if(res2.next()) {%>
+	 <p>
+	 Don't be stingy!  Click here to share your tips!
+	</p>
+	<%
+		String query2 = "SELECT DISTINCT symbol from tips ";
+		System.out.println("\nQuery is: " + query2);
+		ResultSet res2 = s.executeQuery(query2);
+		while (res2.next()) {
+	%>	
 		<p>
-		Don't be stingy!  Click here to share your tips!
+			<a href="sendtips://SHARE?symbol=<%=res2.getString("symbol")%>">Share your tips for <%=res2.getString("symbol")%></a><br />	    
+	<%
+	  	}
+	  	try {
+	  		if(conn != null)
+	  			conn.close();
+	  	} catch (Exception e) {};
+	  	}else{ 
+	  		System.err.println("Tips could not get a valid database connection. Null connection.");
+	  		out.println("A communication error has occurred");
+	  	}
+	%>
 		</p>
 		
-	<%    
-		query2 = "SELECT DISTINCT symbol from tips ";
-	    System.out.println("\nQuery is: " + query2);
-	    res2 = s.executeQuery(query2);	    
-		while(res2.next()){ %>	
-	<p>
-		
-		<a href="sendtips://SHARE?symbol=<%= res2.getString("symbol")%>">Share your tips for <%= res2.getString("symbol")%></a><br />	    
-	<%}%>
-	<% }%>
-	</p>
-	
 	<FORM ACTION="sendtips.jsp" METHOD="POST">
-	Share your tips for other symbols: &nbsp; <input name="textfield" type="text"> &nbsp; <INPUT TYPE="SUBMIT" value="Submit">		
+		Share your tips for other symbols: &nbsp; <input name="textfield" type="text"> &nbsp; <INPUT TYPE="SUBMIT" value="Submit">		
 		<br />
 	</FORM>
 </body>

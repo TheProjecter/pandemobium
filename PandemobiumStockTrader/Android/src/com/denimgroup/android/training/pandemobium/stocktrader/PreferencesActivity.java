@@ -138,7 +138,7 @@ public class PreferencesActivity extends Activity implements OnClickListener {
 			if("account_id".equals(tokens[0])) {
 				accountId = tokens[1];
 			} else {
-				errorMessage = tokens[1];
+				errorMessage = tokens[0];
 			}
 			
 			if(accountId != null) {
