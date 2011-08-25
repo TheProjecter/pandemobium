@@ -1,0 +1,31 @@
+Pandemobium Stock Trader README
+
+Pandemobium Stock Trader is an intentionally-flawed web application that
+can be used by mobile application developers and security analysts to learn
+about secure mobile application development. It consists of both Android
+and iOS versions of the application as well as Java-based web services that
+support the mobile clients.
+
+Important files and directories:
+
+* PandemobiumStockTraderUserManual.html - User manual for the (demonstration)
+    Pandemobium Stock Trader application
+
+* StockTradder/ - Java-based web services that support both the Android and iOS
+    versions of the Pandemobium Stock Trader application
+
+* Android/ - Android version of the Pandemobium Stock Trader application
+
+* iOS/ - iOS version of the Pandemobium Stock Trader application
+
+
+Refer to individual directories for more specific instructions on how to build
+and install the applications. Please note that the web services should be
+started first because they will be required for the peoper operation of either
+of the mobile application clients.
+
+
+Copyright (c) 2011 Denim Group, Ltd.
+http://blog.denimgroup.com/
+http://www.denimgroup.com/
+Please send any comments or questions to Dan Cornell (dan _at_ denimgroup.com)
