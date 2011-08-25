@@ -135,7 +135,7 @@
 	  			conn.close();
 	  	} catch (Exception e) {};
 	  	}else{ 
-	  		System.err.println("Tips could not get a valid database connection. Null connection.");
+	  		System.err.println("Tips could not get a valid database connection.");
 	  		out.println("A communication error has occurred");
 	  	}
 	%>

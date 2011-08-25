@@ -1,4 +1,4 @@
-<%--
+;<%--
  * Pandemobium Stock Trader is a mobile app for Android and iPhone with 
  * vulnerabilities included for security testing purposes.
  * Copyright (c) 2011 Denim Group, Ltd. All rights reserved worldwide.
@@ -42,11 +42,13 @@ String orderStatus = "begin ...";
 if(method.equals("")){
 	System.out.println("No method provided");
 }
+
 else if(method.equals("executeBuy")){
 	id = request.getParameter("id");
 	symbol = request.getParameter("symbol");
 	quantity = request.getParameter("quantity");
 	price = request.getParameter("price");
+	/*Insuffecient validation and client side sql allows injectable sql strings*/ 
 	if(id == "null" || id.equals("") || symbol.equals("") || quantity.equals("") || price.equals("")){
 		orderStatus = "error-missing-data";
 	}
@@ -57,6 +59,9 @@ else if(method.equals("executeBuy")){
 	        c = ConnectionManager.getManager().getConnection();
 	        if(c != null){       
 	        	Statement s = c.createStatement();
+	        	/* SQL Injection flaw allows sql to be modified by passing sql strings
+				*  instead of validated values
+				*/
 	        	String query = "INSERT INTO trades (symbol, quantity, price_per) VALUES ('"+symbol+"', "+quantity+", "+price+") ";
 	        	System.out.println("\nQuery is: " + query);
 	        	int res = s.executeUpdate(query);	
@@ -85,13 +90,6 @@ else if(method.equals("executeBuy")){
 			 }catch(Exception e){};
 		}
 	}
-	/*/ Fake execute transaction
-	if(id.equals("") && symbol.equals("") && quantity.equals("") && price.equals("")){
-		orderStatus = "error-missing-data";
-	}	
-	else{
-		orderStatus = "placed";		
-	}*/
 	out.println("orderStatus=" + orderStatus);
 }
 else{

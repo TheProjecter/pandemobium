@@ -52,6 +52,9 @@
 					if(indcol[0].equals("reason"))
 						reason = indcol[1];
 				}
+				/* SQL Injection flaw allows sql to be modified by passing sql strings
+				*  instead of validated values
+				*/
 				if(symbol.equals(""))
 					break;
 				query = "INSERT INTO tips (tip_creator, symbol, target_price, reason) VALUES ('"
@@ -64,6 +67,9 @@
 		else{
 			System.out.println("Unknown method " + method);
 		}
+		try{
+			c.close();
+		}catch(Exception e){};
 	}else{
 		out.println("error: Unable to get database connection.");
 	}

@@ -40,7 +40,8 @@
 			ResultSet rs = null;
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
-			
+			//There is not enough validation allowing sql to be injected as 
+			//username and password values			
 			if(username != null && !username.equals("")) {
 				//	Actually got a non-blank username so try to log in
 				String query = "SELECT * FROM logins WHERE username = '" + username + "' AND password = '" + password + "'";
