@@ -28,45 +28,46 @@
     response.setHeader("Cache-Control","no-cache"); //HTTP 1.1
     response.setHeader("Pragma","no-cache"); //HTTP 1.0
     response.setDateHeader ("Expires", 0); //prevent caching at the proxy server
-	
-	Connection c = ConnectionManager.getManager().getConnection();
-	if(c!= null){
-		Statement s = c.createStatement();
-		String method = request.getParameter("method");
-		if(method.equals("")){
-			System.out.println("No method provided");
-		}
-		else if(method.equals("getAccountId")){
-			ResultSet rs = null;
-			String username = request.getParameter("username");
-			String password = request.getParameter("password");
-			//There is not enough validation allowing sql to be injected as 
-			//username and password values			
-			if(username != null && !username.equals("")) {
-				//	Actually got a non-blank username so try to log in
-				String query = "SELECT * FROM logins WHERE username = '" + username + "' AND password = '" + password + "'";
-				System.out.println("About to execute query: " + query);
-				try{
-					rs = s.executeQuery(query);
-					if(rs.next()){
-						out.println("account_id="+rs.getString("id"));
-					}else{
-						out.println("error: unknown username or password");
+	String method = request.getParameter("method");
+	if(method == null || method.equals("")){
+		System.out.println("No method provided");
+	}
+	else{
+		Connection c = ConnectionManager.getManager().getConnection();
+		if(c!= null){
+			Statement s = c.createStatement();
+			if(method.equals("getAccountId")){
+				ResultSet rs = null;
+				String username = request.getParameter("username");
+				String password = request.getParameter("password");
+				//There is not enough validation allowing sql to be injected as 
+				//username and password values			
+				if(username != null && !username.equals("")) {
+					//	Actually got a non-blank username so try to log in
+					String query = "SELECT * FROM logins WHERE username = '" + username + "' AND password = '" + password + "'";
+					System.out.println("About to execute query: " + query);
+					try{
+						rs = s.executeQuery(query);
+						if(rs.next()){
+							out.println("account_id="+rs.getString("id"));
+						}else{
+							out.println("error: unknown username or password");
+						}
+					}catch(Exception e){
+						System.err.println(e);
+						out.println(e);
 					}
-				}catch(Exception e){
-					System.err.println(e);
-					out.println(e);
+				}else{
+					 out.println("error: unknown username");
 				}
 			}else{
-				 out.println("error: unknown username");
+				out.println("Unknown method " + method);
 			}
+			try{
+				c.close();
+			}catch(Exception e){};
 		}else{
-			out.println("Unknown method " + method);
+			out.println("error: database communication failed");
 		}
-		try{
-			c.close();
-		}catch(Exception e){};
-	}else{
-		out.println("error: database communication failed");
 	}
 %>
