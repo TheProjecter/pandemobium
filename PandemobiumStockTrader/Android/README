@@ -55,3 +55,8 @@ NOTE: If running on Android device, and not emulator, the IP address
 for the services (including account_service, trade_service, tip_service,
 and tip_list) must be changed under
 PANDEMOBIUM_HOME\Android\res\values\strings.xml
+
+Copyright (c) 2011 Denim Group, Ltd.
+http://blog.denimgroup.com/
+http://www.denimgroup.com/
+Please send any comments or questions to Dan Cornell (dan _at_ denimgroup.com)
