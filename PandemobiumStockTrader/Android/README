@@ -10,21 +10,53 @@ PANDEMOBIUM_HOME/iOS
 
 RUNNING PANDEMOBIUM FROM AN ECLIPSE-BASED IDE
 
-First, download the Android SDK so you can run an Android emulator:
-Follow these instructions for installing and setting up the SDK on your
-Eclipse-based IDE http://developer.android.com/sdk/installing.html
-Next, import the PandemobiumStockTrader project into your favorite IDE's
-workspace:
+First, download the Android SDK and ADT plug-in to enable the
+Android emulator. Follow the instructions for installing and setting
+up the SDK and ADT Plug-in on your Eclipse-based IDE located at 
+http://developer.android.com/sdk/installing.html. If working on Windows
+64 bit versions, save trouble by installing the SDK on a path without
+spaces. Next, import the PandemobiumStockTrader project into your
+favorite IDE's workspace. Here are instructions for Eclipse:
 Right click inside of the package explorer (usually on the left-hand 
-side of your screen), select import, choose "Exisiting Projects into 
-Workspace" inside the "General" folder as the import source, then select 
-the location of the "PandemobiumStockTrader" location.
-Finally, if you have set the window preferences to Android, you can now 
-select the PandemobiumStockTrader in the package explorer, and then 
-choose Run->Run As->Android Application.  This will start the SDK 
-manager where you can choose a virtual device or create a new one.  This 
-device will have the PandemobiumStockTrader app loaded into its app 
+ side of the workbench), select import, choose "Exisiting Projects into Workspace" 
+ inside the "General" folder as the import source, then select the location of the 
+"PandemobiumStockTrader" root directory. In the Project Explorer, right
+click the PandemobiumStockTrader project and click properties, then
+select Android. Select the appropriate Android target platform, 
+(Google API 2.2 is recommended). In the StockTrader web service application, 
+make sure that the Java JDK(Java Development Kit) and servlet-api.jar included in the build path.
+The servlet-api.jar can be found the in lib folder of the Tomcat 
+installation directory, (See below on how install Tomcat.) To add the JDK to
+the build path, right click the StockTrader application and select
+properties, select the Java Build Path menu, then the Libraries tab.
+Click add Library, select JRE System Library and check default 
+workspace JRE. To add the servlet-api.jar, in the same Libraries tab,
+select add Library, click add User Library, click add User Libraries,
+click New, name the new library, then add the servlet.jar file to the
+library. Press Ok then check the new library that was created then click
+ok. The new library should now appear under the Libraries tab.
+In the main menu bar, under the Project menu, select Clean to clean both
+projects to clear any errors. 
+
+Finally, if you have set the window preferences to Android, now select
+the PandemobiumStockTrader in the package explorer, and then choose 
+Run->Run As->Android Application. This will start the SDK manager where
+you can choose a virtual device or create a new one. This device will 
+have the PandemobiumStockTrader application loaded into its application
 menu.
+
+If you get this error when deploying to the Android emulator: 
+[... - Emulator] invalid command-line parameter: Files.
+[... - Emulator] Hint: use '@foo' to launch a virtual device named 'foo'.
+[... - Emulator] please use -help for more information
+Do this:
+In Eclipse go to Window -> Preferences -> Android
+if your SDK path is for example D:\Program Files (x86)\Android\android-sdk 
+change to this D:\PROGRA~2\Android\android-sdk and apply.
+Removing the spaces in the path should fix the problem.
+
+
+
 
 INSTALLING AND RUNNING PANDEMOBIUM USING ONLY IT's .apk FILE
 
@@ -47,9 +79,12 @@ INSTALLING TOMCAT AND RUNNING WEB SERVICES
 (1) Download Tomcat binary distribution at:
 http://tomcat.apache.org/download-70.cgi
 (2) Unpack the binary distribution into a convenient location
- - typically to reside in its own directory named "apache-tomcat-7.x"
+- typically to reside in its own directory named "apache-tomcat-7.x"
 (3) Copy WAR file from PANDEMOBIUM_HOME\bin into TOMCAT_HOME\webapps
-(4) Start Tomcat
+(4) Start Tomcat either through your ide if it is configured correctly,
+ or run the appropriate startup file for your OS in TOMCAT_HOME\bin
+NOTE: Either JAVA_HOME or JRE_HOME environment variables must be set
+before starting tomcat from the command line)
 
 NOTE: If running on Android device, and not emulator, the IP address
 for the services (including account_service, trade_service, tip_service,

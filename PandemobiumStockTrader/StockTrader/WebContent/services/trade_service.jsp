@@ -1,4 +1,4 @@
-<%--
+;<%--
  * Pandemobium Stock Trader is a mobile app for Android and iPhone with 
  * vulnerabilities included for security testing purposes.
  * Copyright (c) 2011 Denim Group, Ltd. All rights reserved worldwide.
@@ -23,13 +23,18 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page
-	import="java.sql.ResultSet, java.sql.Connection, java.sql.DriverManager, java.sql.SQLException, java.sql.Statement"%>
-<%
-      response.setHeader("Cache-Control","no-cache"); //HTTP 1.1
-      response.setHeader("Pragma","no-cache"); //HTTP 1.0
-      response.setDateHeader ("Expires", 0); //prevent caching at the proxy server
+	import="com.denimgroup.stocktrader.ConnectionManager,
+	java.sql.ResultSet,
+	java.sql.Connection,
+	java.sql.DriverManager,
+	java.sql.SQLException,
+	java.sql.Statement"
 %>
 <%
+response.setHeader("Cache-Control","no-cache"); //HTTP 1.1
+response.setHeader("Pragma","no-cache"); //HTTP 1.0
+response.setDateHeader ("Expires", 0); //prevent caching at the proxy server
+
 String method = request.getParameter("method");
 String id = "", symbol = "", quantity = "", price = "";
 String orderStatus = "begin ...";
@@ -37,25 +42,31 @@ String orderStatus = "begin ...";
 if(method.equals("")){
 	System.out.println("No method provided");
 }
+
 else if(method.equals("executeBuy")){
 	id = request.getParameter("id");
 	symbol = request.getParameter("symbol");
 	quantity = request.getParameter("quantity");
 	price = request.getParameter("price");
-	if(id.equals("") && symbol.equals("") && quantity.equals("") && price.equals("")){
+	/*Insuffecient validation and client side sql allows injectable sql strings*/ 
+	if(id == "null" || id.equals("") || symbol.equals("") || quantity.equals("") || price.equals("")){
 		orderStatus = "error-missing-data";
 	}
 	else{
 		System.out.println("id: " + id + "\nsymbol: " + symbol + "\nquantity" + quantity.toString() + "\nprice: " + price.toString());
+		Connection c = null;
 		try{
-			//Class.forName("org.hsqldb.jdbcDriver").newInstance();
-	        Connection c = DriverManager.getConnection("jdbc:hsqldb:mem:stocktrader", "sa", "");	        
-	        Statement s = c.createStatement();
-	        String query = "INSERT INTO trades (symbol, quantity, price_per) VALUES ('"+symbol+"', "+quantity+", "+price+") ";
-	        System.out.println("\nQuery is: " + query);
-	        int res = s.executeUpdate(query);	
-	        System.out.println("insert rows: " + res);
-	        if(res == 1){
+	        c = ConnectionManager.getManager().getConnection();
+	        if(c != null){       
+	        	Statement s = c.createStatement();
+	        	/* SQL Injection flaw allows sql to be modified by passing sql strings
+				*  instead of validated values
+				*/
+	        	String query = "INSERT INTO trades (symbol, quantity, price_per) VALUES ('"+symbol+"', "+quantity+", "+price+") ";
+	        	System.out.println("\nQuery is: " + query);
+	        	int res = s.executeUpdate(query);	
+	        	System.out.println("insert rows: " + res);
+	        	if(res == 1){
 	        	orderStatus = "placed";
 	        }
 	        else{
@@ -67,21 +78,18 @@ else if(method.equals("executeBuy")){
 	        	String test_str = rs_test.getString("symbol");
 	        	System.out.println("\n"+test_str+"\n");
 	        }
-	        c.close();
+	     }  
 		} catch (Exception e) {
+			System.err.println(e);
 			orderStatus = "Unexpected error";
 		    out.println(e);
+		}finally{
+			try{
+				if(c != null)
+			 		c.close();
+			 }catch(Exception e){};
 		}
 	}
-	
-	
-	/*/ Fake execute transaction
-	if(id.equals("") && symbol.equals("") && quantity.equals("") && price.equals("")){
-		orderStatus = "error-missing-data";
-	}	
-	else{
-		orderStatus = "placed";		
-	}*/
 	out.println("orderStatus=" + orderStatus);
 }
 else{

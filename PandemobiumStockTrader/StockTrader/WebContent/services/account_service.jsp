@@ -22,69 +22,51 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page
-	import="java.sql.ResultSet, java.sql.Connection, java.sql.DriverManager, java.sql.SQLException, java.sql.Statement"%>
+<%@ page import="com.denimgroup.stocktrader.ConnectionManager,java.sql.ResultSet,
+			java.sql.Connection, java.sql.SQLException, java.sql.Statement"%>
 <%
-      response.setHeader("Cache-Control","no-cache"); //HTTP 1.1
-      response.setHeader("Pragma","no-cache"); //HTTP 1.0
-      response.setDateHeader ("Expires", 0); //prevent caching at the proxy server
-%>
-<%!
-/**
-*    Set up the database for use by the other pages.
-*/
-public void jspInit(){
-	try{
-	Class.forName("org.hsqldb.jdbcDriver").newInstance();
-    Connection c = DriverManager.getConnection("jdbc:hsqldb:mem:stocktrader", "sa", "");
-    Statement s = c.createStatement();
-	System.out.println("About to set up database for exercises");
-            
-    executeQuery(s, "CREATE TABLE tips (id IDENTITY, tip_creator INT, symbol VARCHAR(64), target_price REAL, reason VARCHAR(64))");
-            
-    executeQuery(s, "CREATE TABLE trades (id IDENTITY, symbol VARCHAR(64), quantity INT, price_per REAL)");
-    		
-    executeQuery(s, "CREATE TABLE logins (id IDENTITY, username VARCHAR(32), password VARCHAR(32))");
-    executeQuery(s, "INSERT INTO logins (username, password) VALUES ('dcornell', 'danpass')");
-    executeQuery(s, "INSERT INTO logins (username, password) VALUES ('jdoe', 'janejohn')");
-	}catch(Exception e){
-		System.err.println(e);
-	}
-    System.out.println("Finished setting up database for exercises");
-}
-
-public void executeQuery(Statement s, String query) throws Exception {
-      System.out.println("Query is: " + query);
-      s.execute(query);
-}
-%>
-<%
-Class.forName("org.hsqldb.jdbcDriver").newInstance();
-Connection c = DriverManager.getConnection("jdbc:hsqldb:mem:stocktrader", "sa", "");
-Statement s = c.createStatement();
-String method = request.getParameter("method");
-if(method.equals("")){
-	System.out.println("No method provided");
-}
-else if(method.equals("getAccountId")){
-	ResultSet rs = null;
+    response.setHeader("Cache-Control","no-cache"); //HTTP 1.1
+    response.setHeader("Pragma","no-cache"); //HTTP 1.0
+    response.setDateHeader ("Expires", 0); //prevent caching at the proxy server
 	
-	String username = request.getParameter("username");
-	String password = request.getParameter("password");
-	String query;
-	if(username != null && !username.equals("")) {
-		//	Actually got a non-blank username so try to log in
-		query = "SELECT * FROM logins WHERE username = '" + username + "' AND password = '" + password + "'";
-		System.out.println("About to execute query: " + query);
-		rs = s.executeQuery(query);
-	}
-	
-	if(rs.next()){
-		out.println("account_id="+rs.getString("id"));
+	Connection c = ConnectionManager.getManager().getConnection();
+	if(c!= null){
+		Statement s = c.createStatement();
+		String method = request.getParameter("method");
+		if(method.equals("")){
+			System.out.println("No method provided");
+		}
+		else if(method.equals("getAccountId")){
+			ResultSet rs = null;
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
+			//There is not enough validation allowing sql to be injected as 
+			//username and password values			
+			if(username != null && !username.equals("")) {
+				//	Actually got a non-blank username so try to log in
+				String query = "SELECT * FROM logins WHERE username = '" + username + "' AND password = '" + password + "'";
+				System.out.println("About to execute query: " + query);
+				try{
+					rs = s.executeQuery(query);
+					if(rs.next()){
+						out.println("account_id="+rs.getString("id"));
+					}else{
+						out.println("error: unknown username or password");
+					}
+				}catch(Exception e){
+					System.err.println(e);
+					out.println(e);
+				}
+			}else{
+				 out.println("error: unknown username");
+			}
+		}else{
+			out.println("Unknown method " + method);
+		}
+		try{
+			c.close();
+		}catch(Exception e){};
 	}else{
-		out.println("error: unknown username or password");
+		out.println("error: database communication failed");
 	}
-}else{
-	out.println("Unknown method " + method);
-}
 %>
