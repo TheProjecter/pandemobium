@@ -44,7 +44,7 @@ import android.widget.TextView;
 
 public class PreferencesActivity extends Activity implements OnClickListener {
 	
-	private static String CREDENTIALS_FILE = "credentials.properties";
+	public static String CREDENTIALS_FILE = "credentials.properties";
 	public static String ACCOUNT_FILE = "account.txt";
 	
 	private Button btnRetrievePrefs;

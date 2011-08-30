@@ -22,10 +22,14 @@
 
 package com.denimgroup.android.training.pandemobium.stocktrader;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -39,6 +43,7 @@ import org.apache.http.message.BasicNameValuePair;
 import com.denimgroup.android.training.pandemobium.stocktrader.util.AccountUtils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -173,17 +178,46 @@ public class ManageTipsActivity extends Activity implements OnClickListener {
 	
 	private void doSaveTip() {
 		String symbol = etSymbol.getText().toString();
-		Double targetPrice = Double.parseDouble(etTargetPrice.getText().toString());
+		Double targetPrice = null;
+		try{
+			targetPrice = Double.parseDouble(etTargetPrice.getText().toString());
+		}catch(Exception e){
+			tvTipStatus.setText("Invalid target price.");
+			return;
+		}
+		if(symbol == null || symbol.equals("")){
+			tvTipStatus.setText("Invalid stock symbol.");
+			return;
+		}
+		
 		String reason = etReason.getText().toString();
-		
-		//	TOFIX - Read the username from the credentials.properties file
-		
+		//Pull user from the credentials.properties file
+		Properties properties = new Properties();
+		FileInputStream stream = null;
+		try {
+			Context context = getApplicationContext();
+			stream = context.openFileInput(PreferencesActivity.CREDENTIALS_FILE);
+			properties.load(stream);
+			System.err.println("username = " + properties.getProperty("Username"));
+		} catch (IOException e) {
+			Log.e("ManageTipsActivity", "Error when accessing credentials: " + e.toString());
+			e.printStackTrace();
+		}finally{
+			try {
+				if(stream != null)
+					stream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		String user =  (properties.getProperty("Username") == null ? "" : properties.getProperty("Username"));
+		//TODO How to handle if user has not logged in yet?
 		String sql = "INSERT INTO tip (tip_creator, symbol, target_price, reason) VALUES (?, ?, ?, ?)";
 		
 		StockDatabase dbHelper = new StockDatabase(this.getApplicationContext());
 		SQLiteDatabase db = dbHelper.openDatabase();
 		SQLiteStatement stmt = db.compileStatement(sql);
-		stmt.bindString(1, "USERNAME");
+		stmt.bindString(1, user);
 		stmt.bindString(2, symbol);
 		stmt.bindDouble(3, targetPrice);
 		stmt.bindString(4, reason);

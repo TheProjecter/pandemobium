@@ -1,55 +1,103 @@
 <html>
+	<head>
+		<style>
+			.title {text-align:left;margin-left: 15px;text-decoration: underline;}
+			.image {align: center;margin-bottom: 20px;}
+			p,a {width:550px;font-size: 18;margin-left: 12px;}
+			div {margin-left: 10px;}
+		</style>
+	</head>
 	<body>
 		<h1>
 			Pandemobium Stock Trader - User Guide
 		</h1>
-		<p>
-			Table of Contents:
-			<ol>
-				<li><a href="#main">Main Screen</a></li>
-				<li><a href="#back">Back Button</a></li>
-				<li><a href="#login">Login Screen</a></li>
-				<li><a href="#tipmanager">Tip Manager</a></li>
-				<li><a href="#tipscreen">Tip Screen</a></li>
-				<li><a href="#trades">Trades</a></li>
-				<li><a href="#history">History</a></li>
-			</ol>
-		</p>
-
+		<div style="border: black solid 1px; width: 170px;margin-bottom: 20px;">
+			<table>
+				<thead>
+					<th style="font-weight: bold;">Table of Contents:</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td><a href="#introduction">What Is It?</a></td>
+					</tr>
+					<tr>
+						<td><a href="#main">Main Menu</a></td>
+					</tr>
+					<tr>
+						<td><a href="#login">Preferences</a></td>
+					</tr>
+					<tr>
+						<td><a href="#trades">Trades Page</a></td>
+					</tr>
+					<tr>
+						<td><a href="#tipmanager">Tip Manager</a></td>
+					</tr>
+					<tr>
+						<td><a href="#tipspage">Tips Page</a></td>
+					</tr>
+					<tr>
+						<td><a href="#history">History</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<hr/>
+		<div>
+		
+		<a name="introduction" />
+		<h2 class="title">What Is It?</h2>
+		<p>  Pandemobium Stock Trader is a web service which allows registered users to retrieve quotes for, and purchase, capital stocks from their mobile devices. The application also enables users to create, share, and view tips, which are used to advise other users on the right price to purchase specific stocks at, and why. Users of Pandemobium Stock Trader are also provided with a History utility, useful for viewing all previously purchased stocks and previously shared tips.</p>
+		<hr/>
+		
 		<a name="main" />
-		<h2>Main Screen</h2>
-		<p> 1.  Upon selecting the PandemobiumStockTrader app icon from the app menu, you will be brought to the main page.  Here there are buttons that will take you to the tips page, trade page, preferences page, history page, tip manager page, and the "About the app" page. </p>
-		<img alt="MainScreen" width="575" height="600" src="images/MainScreen.PNG">
-
-		<a name="back" />
-		<h2>Back Button</h2>
-		<p> 2.  Whenever you need to get back to the main screen, select the 'back button' on the ride-hand side of you emulator.  It looks like this: </p>
-		<img alt="BackButton" width="575" height="600" src="images/BackButton.PNG">
-
+		<h2 class="title">Main Menu</h2>
+		<p>  Launching the PandemobiumStockTrader app will bring the user to the Main Menu of Pandemobium Stock Trader. This screen provides the user with the ability to navigate to any other page of the application. Each button in this menu corresponds to one of the pages listed in the sections below.</p>
+		<img class="image" alt="MainScreen" width="575" height="600" src="images/MainScreen.PNG">
+		<p>  The user can navigate back to the Main Menu from any page in the application by pressing the emulated Android device's Back Button, (highlighted in the picture below). Pressing this button takes the user back to the previously visited page. Please note the button may need to be pressed multiple times in order for the user to navigate back to the desired page.</p>
+		<img class="image" alt="BackButton" width="575" height="600" src="images/BackButton.PNG">
+		<hr/>
+		
 		<a name="login" />
-		<h2>Login Screen</h2>
-		<p> 3.  First you need to login so your tips will be saved to the database.  Click the preferences button and enter in your username and password here: </p>
-		<img alt="PandemobiumLogin" width="575" height="600" src="images/Login.PNG">
+		<h2 class="title">Preferences</h2>
+		<p> The Preferences page can be used to retrieve account information and give access to the tip sharing feature of the application. Users who have not logged into their account retain the ability to view and purchase stocks, create tips that can later be shared, and view their transaction history. This page is accessable by clicking the "Preferences" button on the Main Menu.</p>
+		<img class="image" alt="PandemobiumLogin" width="575" height="600" src="images/Login.PNG">
+		<p> In order for the user to log into the application, they must provide valid values for the User Name and Password fields, and then click the "Retrieve Preferences" button. A message will appear below the button indicating whether or not the login attempt was successful.</p>
+		<hr/>
+		
+		<a name="trades" />
+		<h2 class="title">Trades Page</h2>
+		<p> The Trades Page can be used for retrieving quotes for various stocks. The user can also use the page to purchase a specified amount of a particular stock.</p>
+		<img class="image" alt="Trade" width="575" height="600" src="images/Trade.PNG">
+		<p> In order to retrieve the current value of a stock, the user must provide a valid symbol for the "Symbol" field and click the "Get Quote" button. If the symbol was valid, a message will appear under the "Get Quote" button indicating the price of the stock.</p>
+		<p> If the user would like to purchase a particular stock, they must provide a valid symbol for the "Symbol" field and a value indicating the number of stocks they would like to order in the "Shares" field, and then click the "Buy" button. A message indicating the status of the order will be displayed under the "Buy" button after it has been clicked.</p>
+		<hr/>
+
 
 		<a name="tipmanager" />
-		<h2>Tip Manager</h2>
-		<p> 4.  Now you can add a tip.  Click "Manage My Tips" and add a stock symbol, a target stock price, and a reason for this target here: </p>
-		<img alt="TipManager" width = "575" height="600" src="images/TipManager.PNG">
-
+		<h2 class="title">Tip Manager</h2>
+		<p> The user can use the Tip Manager page to create and save new tips, which can later by shared with other Pandemobium Stock Trader users through use of the Tips Page. To view this page, the used must click on the "Tip Manager" button on the Main Menu. </p>
+		<img class="image" alt="TipManager" width = "575" height="600" src="images/TipManager.PNG">
+		<p> The user must provide values for all three fields in order for the tip to save successfully. Upon saving, a message will appear on the bottom of the page content indicating the status of the save. </p>
+		<hr/>
+		
 		<a name="tipscreen" />
-		<h2>Tip Screen</h2>
-		<p> 5.  Click "Save Tip" to save the tip to the database.  To share this tip, go back to the PandemobiumStockTrader home page, and select "Tips". Enter the symbol of any tip you have saved, and the tip, along with the username of the tip creator, will appear here: </p>
-		<img alt="SharedTips" width=  "575" height = "600" src="images/SharedTips.PNG">
-
-		<a name="trades" />
-		<h2>Trades</h2>
-		<p> 6.  To get a stock quote or to buy stock, click the "Trade" button on the main page.  Enter the stock symbol and number of shares to purchase here: </p>
-		<img alt="Trade" width="575" height="600" src="images/Trade.PNG">
+		<h2 class="title">Tips Page</h2>
+		<p> The Tips Page can be used to view tips posted by other users of the service. Each tip provides the current user with shortcut links to purchase various amounts of the recommended stock. This page can be reached by clicking the "Tips" button on the Main Menu.</p>
+		<p> This page also provides users with the ability to send their saved tips to the web service, which will make them viewable to all other users of the application.</p>
+		<img class="image" alt="SharedTips" width=  "575" height = "600" src="images/SharedTips.PNG">
+		<p> In order to send tips, the user must either click on the "Share your tips for..." link, or alternatively type the symbol of the saved tips they want to share into the input field and click the "Submit" button. At this point the user will be redirected to a blank page with a "Send Tips" link, which must be clicked in order for the specified tips to be sent to the web service. Upon sending tips the user is brought to the Tip Manager page, where a message will appear on the bottom of the page indicating the status of the sent tips.</p>
+		<hr/>
 
 		<a name="history" />
-		<h2>History</h2>
-		<p> 7.  To review all purchases and tips created, click the "History"" button on the main page.  Your tip and purchase history should look something like this: </p>
-		<img alt="History" width="575" height="600" src="images/History.PNG">
-
+		<h2 class="title">History Page</h2>
+		<p> The History Page provides the user with a visual representation of all past transactions. All previously purchased stocks and shared tips are displayed on this page.
+		<img class="image" alt="History" width="575" height="600" src="images/History.PNG">
+		<p> The "Trade History:" section shows information about stocks that have been purchased by the user. This information includes the quantity of stocks in the purchase, the price of said stocks, and the date on which they were ordered.</p>
+		<p> The "Tip History:" section displays all of the tips previously shared by the user.</p>
+		<hr/>
+		</div>
+		<br/>
+		<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br />This work by <a xmlns:cc="http://creativecommons.org/ns#" href="http://www.denimgroup.com/" property="cc:attributionName" rel="cc:attributionURL">Denim Group</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.<br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/" href="https://code.google.com/p/pandemobium/" rel="dct:source">code.google.com</a>.
 	</body>
+</html>
 </html>

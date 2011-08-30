@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VulnerabilitiesInPandemobiumStockTrader.html</title>
+	
+    <meta http-equiv="description" content="Vulnerability Summary">
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <style>
+		.title {text-align:left;margin-left: 15px;text-decoration: underline;}
+		.image {align: center;margin-bottom: 20px;}
+		p,a {width:550px;font-size: 18;margin-left: 12px;}
+		div {margin-left: 10px;}
+	</style>
+  </head>
+  
+  <body>
+		<h1>
+			Pandemobium Stock Trader - Vulnerabilities Guide
+		</h1>
+		<div>
+				<p> 
+					Pandemobium Stock Trader mobile applications and web services are 
+					designed to demonstrate common vulnerabilities.Below is a list of
+					flaws that have been included <br>
+				</p> 
+		</div>
+		<div>
+			<ul>
+			<li>
+				<p> 
+					SQL Injection flaws are included and can be exploited on all input fields. Poor validation 
+					allows improper input to be treated as SQL statement.  
+				</p>
+			</li>
+		 	<li>
+				<p> 
+					Local storage file permissions are saved with world readable or normal permissions. 
+					World readable permissions allow other applications to access them. Normal permissions allows 
+					the files to be read offline such as when the phone is lost. 
+					 
+					A local database with world readable permissions is also included, allowing other  
+					users and applications to have access.  
+				</p>
+				</li> 
+				 
+			<li>
+				<p>
+					XSS flaws have been added by using incorrect input validation and output encoding. 
+					The web services do this by returning the echo invalid method names that are passed in.
+				</p>
+				</li> 
+				<li>
+				<p>&nbsp; 
+					Poor trust relationships and boundaries have been added allowing invalid data to be submitted to the web services. The web services trusts the client to send valid stock prices. 
+				</p>
+				</li>
+				</ul> 
+		</div>
+	</body>
+</html>
