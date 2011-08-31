@@ -34,7 +34,7 @@
 		s = c.createStatement();
 		String method = request.getParameter("method");
 		if(method == null){
-			System.out.println("No method provided");
+			out.println("No method provided");
 		}
 		else if(method.equals("submitTips")){
 			tip_creator = request.getParameter("id");
@@ -65,7 +65,7 @@
 			}
 		}
 		else{
-			System.out.println("Unknown method " + method);
+			out.println("Unknown method " + method);
 		}
 		try{
 			c.close();

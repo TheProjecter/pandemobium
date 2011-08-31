@@ -8,7 +8,7 @@
     <style>
 		.title {text-align:left;margin-left: 15px;text-decoration: underline;}
 		.image {align: center;margin-bottom: 20px;}
-		p,a {width:550px;font-size: 18;margin-left: 12px;}
+		p,a {width:650px;font-size: 18;margin-left: 12px;}
 		div {margin-left: 10px;}
 	</style>
   </head>
@@ -17,44 +17,127 @@
 		<h1>
 			Pandemobium Stock Trader - Vulnerabilities Guide
 		</h1>
+		<hr/>
 		<div>
 				<p> 
-					Pandemobium Stock Trader mobile applications and web services are 
-					designed to demonstrate common vulnerabilities.Below is a list of
-					flaws that have been included <br>
+					The Pandemobium Stock Trader mobile application and web service are 
+					designed to demonstrate common web application security vulnerabilities. Several 
+					features are intentionally left exploitable to various web based 
+					attacks.  This document serves to indicate which vulnerabilities are present and where they reside. <br>
 				</p> 
 		</div>
 		<div>
+			<h2>
+				Vulnerabilities in the Stock Trader Web Service
+			</h2>
 			<ul>
-			<li>
-				<p> 
-					SQL Injection flaws are included and can be exploited on all input fields. Poor validation 
-					allows improper input to be treated as SQL statement.  
-				</p>
-			</li>
-		 	<li>
-				<p> 
-					Local storage file permissions are saved with world readable or normal permissions. 
-					World readable permissions allow other applications to access them. Normal permissions allows 
-					the files to be read offline such as when the phone is lost. 
-					 
-					A local database with world readable permissions is also included, allowing other  
-					users and applications to have access.  
-				</p>
-				</li> 
-				 
-			<li>
-				<p>
-					XSS flaws have been added by using incorrect input validation and output encoding. 
-					The web services do this by returning the echo invalid method names that are passed in.
-				</p>
-				</li> 
 				<li>
-				<p>&nbsp; 
-					Poor trust relationships and boundaries have been added allowing invalid data to be submitted to the web services. The web services trusts the client to send valid stock prices. 
-				</p>
+					<p>
+						Every input field in the web service is vulnerable to SQL injection. Poor validation 
+						allows improper input to be treated as SQL statements which, in turn, allows the user to 
+						directly interact with the web application server's database. Malicious users can exploit
+						this vulnerability to assert information about the database tables as well as perform malicious
+						SQL commands.
+						<br><br>
+						SQL injection can be performed on the following fields:
+							<ul>
+								<li>
+									The Symbol and Shares fields of the Trade Page
+								</li>
+								<li>
+									The User Name and Password fields on the Preferences page
+								</li>
+								<li>
+									The Symbol, Target Price, and Reason fields on the Tip Manager page
+								</li>
+								<li>
+									The "Share your tips for other symbols:" field on the Tips page
+								</li>
+							</ul>
+					</p>
 				</li>
-				</ul> 
+				<li>
+					<p>
+						A lack of correct input validation and output encoding in the Stock Trader web service results in an exploitable
+						Cross Site Scripting (XSS) vulnerability. The application uses method 
+						names, passed in as URL parameters to the various page services, to determine the correct
+						method to call to perform the desired action. If the method name is not null or empty, and it is also invalid, the application
+						will rerender the view with an error message containing an unencoded echo of the invalid method 
+						name String. This means that a malicious user can directly modify the requested URL, replacing the 
+						method name with executable browser script, which will execute when the error message returned
+						by the server is rendered. Using this tactic, the attacker can construct a malformed URL, send it to another user
+						of the application under false pretenses and, (assuming the malicious link is clicked), essentially take control of the victim's browser.
+					</p>
+				</li>	
+				<li>
+					<p>
+						The application does not properly secure its trust boundries, meaning that the service will always 
+						take input from the user or database without questioning its validity. This allows a malicious user to directly
+						modify requests to the server to achieve a desired outcome. This vulnerability is prevalent on the Trades page, where a 
+						malicious user can modify a request to the web service in order to change various parameters of the stock purchase including the price of the stock,
+						the stock symbol, and the quantity of the specified stock to purchase. This vulnerability can also be used to trick an unsuspecting user into making
+						an unintended transaction.
+					</p>
+				</li>
+			</ul>
+		</div>
+		<div>
+			<h2>
+				Vulnerabilities in the Pandemobium Stock Trader Mobile Application
+			</h2>
+			<ul>
+				<li>
+					<p>
+						The Pandemobium Stock Trader application stores users' account ids in an unsecured accessable file. 
+						
+						<ul>
+							<li>
+								<p>
+									iPhone users
+									will have their account ids stored in a local file on the device that is accessible via the "Documents/" directory. 
+								</p>
+							</li>
+							<li>
+								<p>
+									Android users will have their account ids stored in a local file on the device that is world readable and writable, which
+									means that the file can be retrieved by anyone with access to the device's file system.
+								</p>
+							</li>
+						</ul>
+					</p>
+				</li>
+				<li>
+					<p>
+						The Pandemobium Stock Trader application stores user account credentials, (user name and password), in an insecure manner on the 
+						user's device. 
+						<ul>
+							<li>
+								<p>
+									Account credentials are stored in a keychain entry on the iPhone. This entry is not limited to the application and 
+									can be easily retrieved if the device is unlocked. 
+								</p>
+							</li>
+							<li>
+								<p>
+									On Android devices, account credentials are stored in a file which is given default
+									permissions. This file can be compromised trivially with physical access to the device.	
+								</p>
+							</li>
+						</ul>
+					</p>
+				</li>
+				<li>
+					<p>
+						The application also creates a local SQLite database, which stores all recent trade and stock tip
+						transactions to the device's hard drive. This database is given world readable and world writable 
+						permissions allowing it to be accessed and/or modified by other mobile applications on the device,
+						as well as users of the device if it has been unlocked.
+					</p>
+				</li>
+			</ul>
+			<hr/>
+			<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br />This work by <a xmlns:cc="http://creativecommons.org/ns#" href="http://www.denimgroup.com/" property="cc:attributionName" rel="cc:attributionURL">Denim Group</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.<br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/" href="https://code.google.com/p/pandemobium/" rel="dct:source">code.google.com</a>.
+			<ul> 
 		</div>
 	</body>
 </html>

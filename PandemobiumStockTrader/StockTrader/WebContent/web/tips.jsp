@@ -44,8 +44,8 @@
 </head>
 <body>
 	<p>
-	I'm the the tips page.
-	This is where you can see sweet stock tips.  
+	Welcome to the Tips page!
+	You can use this page to view tips posted by other Stock Trader users to advise which stocks to purchase and when.  
 	</p>
 	<p>
 		<table>
