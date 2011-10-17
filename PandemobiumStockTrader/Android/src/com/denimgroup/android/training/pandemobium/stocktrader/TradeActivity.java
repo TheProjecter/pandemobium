@@ -23,7 +23,6 @@
 package com.denimgroup.android.training.pandemobium.stocktrader;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -37,29 +36,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
+import de.hdtconsulting.yahoo.finance.YQuote;
+import de.hdtconsulting.yahoo.finance.YSymbol;
+import de.hdtconsulting.yahoo.finance.Yapi;
+import de.hdtconsulting.yahoo.finance.csv.format.YTag;
 
 import com.denimgroup.android.training.pandemobium.stocktrader.util.AccountUtils;
 
 public class TradeActivity extends Activity implements OnClickListener {
 	
-	private static String BASE_URL = "http://query.yahooapis.com/";
-	private static String SERVICE = "v1/public/yql";
-	private static String BASE_QUERY = "select Ask from yahoo.finance.quotes where symbol = ";
-	private static String STORE = "store://datatables.org/alltableswithkeys";
-	
-	private static String ORDER_STATUS = "orderStatus";
-	private static String STATUS_PLACED = "placed";
 	
 	private Button btnGetQuote;
 	private Button btnTrade;
@@ -178,71 +171,99 @@ public class TradeActivity extends Activity implements OnClickListener {
 	private void doGetQuote()
 	{
 		String symbol = etSymbol.getText().toString();
-		String quote = retrieveQuote(symbol);
+		YQuote quote = retrieveYQuote(symbol);
 		String labelText = "";
-		if(quote ==  null){
-			quote = "0";
+		if(quote.getValue(YTag.BID) ==  null){
 			labelText = "Unexpected error!";
+			this.sharePrice = Double.parseDouble("0");
 		}
 		else{
-			labelText = symbol + " is currently trading at " + quote;
+			labelText = symbol + " is currently trading at " + quote.getValue(YTag.BID);
+			this.sharePrice = Double.parseDouble(quote.getValue(YTag.CHANGE));
 		}
 		
 		tvCurrentQuote.setText(labelText);
-		this.sharePrice = Double.parseDouble(quote);
+		
+	}
+	
+	private YQuote retrieveYQuote(String symbol){
+		Yapi yapi = new Yapi();
+		
+		yapi.addTag(YTag.NAME);
+		yapi.addTag(YTag.LAST_TRADE_DATE);
+		yapi.addTag(YTag.LAST_TRADE_TIME);
+		yapi.addTag(YTag.CHANGE);
+		yapi.addTag(YTag.BID);
+		
+		YSymbol ySymbol = new YSymbol(symbol);
+		yapi.addQuote(ySymbol);
+		
+//		System.out.println(yapi.getCsv());
+//		System.out.println(yapi.getRefreshTime());
+		
+		yapi.refresh();
+		
+//		System.out.println();
+//		System.out.println(yapi.getCsv());
+//		System.out.println(yapi.getRefreshTime());
+		
+		List<YQuote> quoteList = new ArrayList<YQuote>();
+		quoteList = yapi.getQuotes();
+		
+		return quoteList.get(0);
 	}
     
-    private String retrieveQuote(String symbol)
-    {
-    	String retVal = null;
-    	String query = BASE_QUERY + "\"" + symbol + "\"";
-    	String fullUrl = BASE_URL + SERVICE + "?q=" + URLEncoder.encode(query) + "&env=" + STORE; 
-    	
-    	Log.d("TradeActivity", "URL to be retrieved is: " + fullUrl);
-    	
-    	try {
-	    	URL url = new URL(fullUrl);
-	    	
-	    	XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
-	    	XmlPullParser parser = parserCreator.newPullParser();
-	    	
-	    	// test ...
-	    	URLConnection conn = url.openConnection();
-	    	parser.setInput(conn.getInputStream(), null);
-	    	
-	    	//String test = conn.getInputStream().toString();
-	    	
-	    	//parser.setInput(url.openStream(), null);
-	    	
-	    	int parserEvent = parser.getEventType();
-	    	parse:
-	    	while(parserEvent != XmlPullParser.END_DOCUMENT) {
-	    		switch(parserEvent) {
-	    		case XmlPullParser.START_TAG:
-	    			//test = parser.getName();
-	    			Log.d("TradeActivity", "Found a " + parser.getName() + " tag");
-	    			break;
-	    		case XmlPullParser.TEXT:
-	    			Log.d("TradeActivity", "Found a TEXT event");
-	    			retVal = parser.getText();
-	    			Log.d("TradeActivity", "Found Ask value of: " + retVal);
-	    			break parse;
-	    		}
-	    		parserEvent = parser.next();
-	    	}
-	    	
-    	} catch (MalformedURLException urle) {
-    		Log.e("TradeActivity", urle.toString());
-    	} catch (IOException ioe) {
-    		Log.e("TradeActivity", ioe.toString());
-    	} catch (XmlPullParserException xmle) {
-    		Log.e("TradeActivity", xmle.toString());
-		}
-    	
-    	Log.d("TradeActivity", "Content to be returned is: " + retVal);
-    	
-    	return(retVal);
-    }
+//    private String retrieveQuote(String symbol)
+//    {
+//    	String retVal = null;
+//    	String query = BASE_QUERY + "\"" + symbol + "\"";
+//    	String fullUrl = BASE_URL + SERVICE + "?q=" + URLEncoder.encode(query) + "&env=" + STORE; 
+//    	
+//    	Log.d("TradeActivity", "URL to be retrieved is: " + fullUrl);
+//    	
+//    	try {
+//	    	URL url = new URL(fullUrl);
+//	    	
+//	    	XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
+//	    	XmlPullParser parser = parserCreator.newPullParser();
+//	    	
+//	    	// test ...
+//	    	URLConnection conn = url.openConnection();
+//	    	parser.setInput(conn.getInputStream(), null);
+//	    	
+//	    	//String test = conn.getInputStream().toString();
+//	    	
+//	    	//parser.setInput(url.openStream(), null);
+//	    	
+//	    	int parserEvent = parser.getEventType();
+//	    	parse:
+//	    	while(parserEvent != XmlPullParser.END_DOCUMENT) {
+//	    		switch(parserEvent) {
+//	    		case XmlPullParser.START_TAG:
+//	    			//test = parser.getName();
+//	    			Log.d("TradeActivity", "Found a " + parser.getName() + " tag");
+//	    			break;
+//	    		case XmlPullParser.TEXT:
+//	    			Log.d("TradeActivity", "Found a TEXT event");
+//	    			retVal = parser.getText();
+//	    			Log.d("TradeActivity", "Found Ask value of: " + retVal);
+//	    			break parse;
+//	    		}
+//	    		parserEvent = parser.next();
+//	    	}
+//	    	
+//    	} catch (MalformedURLException urle) {
+//    		Log.e("TradeActivity", urle.toString());
+//    	} catch (IOException ioe) {
+//    		Log.e("TradeActivity", ioe.toString());
+//    	} catch (XmlPullParserException xmle) {
+//    		Log.e("TradeActivity", xmle.toString());
+//		}
+//    	
+//    	Log.d("TradeActivity", "Content to be returned is: " + retVal);
+//    	
+//    	return(retVal);
+//    }
     
     // http://query.yahooapis.com/v1/public/yql?q=select%20Ask%20from%20yahoo.finance.quotes%20where%20symbol%20in%20%28%22AAPL%22%29&env=store://datatables.org/alltableswithkeys
     // http://query.yahooapis.com/v1/public/yql?q=SELECT+Ask+FROM+yahoo.finance.quote+WHERE+SYMBOL+%3D+YHOO&env=store://datatables.org/alltableswithkeys

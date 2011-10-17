@@ -44,5 +44,6 @@ public class TipsActivity extends Activity {
         wvTips.loadUrl(getString(R.string.tip_list));
         //wvTips.loadUrl("http://10.0.2.2:8080/StockTrader/web/tips.jsp");
         // wvTips.loadUrl("file:///android_asset/tips/tips.html");
+        wvTips.getSettings().setJavaScriptEnabled(true);
     }
 }

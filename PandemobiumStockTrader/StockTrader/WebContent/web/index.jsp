@@ -32,6 +32,7 @@
 		This directory contains web pages used by the mobile apps:
 		<ul>
 			<li><a href="tips.jsp">Web user interface to display tips shared by other users</a></li>
+			
 		</ul>
 	</p>
 </body>

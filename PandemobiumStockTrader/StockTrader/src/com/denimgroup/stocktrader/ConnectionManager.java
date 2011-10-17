@@ -75,6 +75,10 @@ public class ConnectionManager {
 			s.execute("CREATE TABLE logins (id IDENTITY, username VARCHAR(32), password VARCHAR(32))");
 			s.execute("INSERT INTO logins (username, password) VALUES ('dcornell', 'danpass')");
 			s.execute("INSERT INTO logins (username, password) VALUES ('jdoe', 'janejohn')");
+			s.execute("INSERT INTO tips (tip_creator, symbol, target_price, reason) VALUES ('0', 'GOOG', 400.0, 'Great price!')");
+			s.execute("INSERT INTO tips (tip_creator, symbol, target_price, reason) VALUES ('1', 'AMZN', 300.0, 'Things are looking up for Amazon.')");
+			s.execute("INSERT INTO tips (tip_creator, symbol, target_price, reason) VALUES ('0', 'YHOO', 400.0, 'Now is the time to buy.')");
+			
 		}catch(Exception e){
 			System.err.println(e);
 		}

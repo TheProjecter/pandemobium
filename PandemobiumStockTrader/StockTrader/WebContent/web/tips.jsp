@@ -34,24 +34,35 @@
 <%@ page import="org.w3c.dom.*" %>
 <%@ page import="org.xml.sax.*" %>
 <%@ page import="com.denimgroup.stocktrader.ConnectionManager" %>
+<%@page import="com.denimgroup.stocktrader.YahooFinanceUtility"%>
+
 
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>I'm the local tips page</title>
+<title>Tips Page</title>
+<script type="text/javascript">
+function clickButton() {
+	var symbol = document.getElementById('symbolField').value;
+	document.getElementById('sendTips').action = "sendtips://SHARE?symbol=" + symbol;
+	document.getElementById('sendTips').submit();
+}
+</script>
 </head>
 <body>
-	<p>
-	Welcome to the Tips page!
-	You can use this page to view tips posted by other Stock Trader users to advise which stocks to purchase and when.  
+	<p> 
+	Welcome to the Tips page! 
+	You can use this page to view tips posted by other Stock Trader users to advise which stocks to purchase and when.   
 	</p>
 	<p>
 		<table>
-			<tr>
-				<th>User</th><th>Stock</th><th>Target Price</th><th>TRADE!</th>
-			</tr>	
+			<thead>
+				<tr>
+					<th>User</th><th>Stock</th><th>Current Price</th><th>Target Price</th><th>TRADE!</th>
+				</tr>
+			</thead>	
 			<%
 				String BASE_QUERY, BASE_URL, SERVICE, STORE, retVal = null;
 				String current_price = "0";
@@ -73,6 +84,10 @@
 					try {
 						String symbol = res.getString("symbol").toUpperCase();
 						System.out.println("symbol: " + symbol);
+						
+						//get current stock value
+						//current_price = YahooFinanceUtility.getQuoteForSymbol(symbol);
+						
 						yahoo_query = BASE_QUERY + "\"" + symbol + "\"";
 						fullUrl = BASE_URL + SERVICE + "?q="
 								+ URLEncoder.encode(yahoo_query) + "&env=" + STORE;
@@ -107,6 +122,7 @@
 			<tr>
 				<td><%=res.getString("username")%></td>
 				<td><%=res.getString("symbol")%></td>
+				<td><%=current_price%></td>
 				<td><%=res.getString("target_price")%></td>
 				<td>
 					<a href="trade://BUY?symbol=<%=res.getString("symbol")%>&shares=50&price=<%=current_price%>">Buy 50!</a>
@@ -141,8 +157,8 @@
 	%>
 		</p>
 		
-	<FORM ACTION="sendtips.jsp" METHOD="POST">
-		Share your tips for other symbols: &nbsp; <input name="textfield" type="text"> &nbsp; <INPUT TYPE="SUBMIT" value="Submit">		
+	<FORM id="sendTips" ACTION="" METHOD="GET">
+		Share your tips for other symbols: &nbsp; <input id="symbolField" name="symbol" type="text"> &nbsp; <INPUT type="button" value="Submit" onclick="clickButton();"/><INPUT style="display: none;" TYPE="SUBMIT" value="Submit">		
 		<br />
 	</FORM>
 </body>

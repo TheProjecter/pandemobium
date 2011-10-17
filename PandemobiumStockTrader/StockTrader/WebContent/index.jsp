@@ -26,12 +26,32 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Pandemobium Web Application and Web Services</title>
+<style>
+body
+{
+background-color: #8899ff;
+}
+
+h1
+{
+color: orange;
+font-family: "Times New Roman", Times, serif; 
+}
+</style>
 </head>
 <body>
+	<div style="border: dashed #3300aa 2px; background-color: white;padding: 1px 15px;">
+	<h1>
+		Welcome to the Stock Trader Web Service
+	</h1>
+	</div>
+	<hr/>
+	<div>
 	<ul>
-		<li><a href="web/">Web pages in use by the mobile application</a></li>
+		<li><a href="web/">Click here to access pages used by the Pandemobium Mobile Application</a></li>
 		<li><a href="services/">Web services that support the mobile application</a></li>
 		<li><a href="maliciousweb/">Examples of malicious web pages that could be used to exploit the mobile applications</a>
 	</ul>
+	</div>
 </body>
 </html>
