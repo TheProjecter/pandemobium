@@ -23,8 +23,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page
-	import="com.denimgroup.stocktrader.ConnectionManager,
-	java.sql.ResultSet,
+	import="java.sql.ResultSet,
 	java.sql.Connection,
 	java.sql.DriverManager,
 	java.sql.SQLException,
@@ -56,7 +55,7 @@ else if(method.equals("executeBuy")){
 		System.out.println("id: " + id + "\nsymbol: " + symbol + "\nquantity" + quantity.toString() + "\nprice: " + price.toString());
 		Connection c = null;
 		try{
-	        c = ConnectionManager.getManager().getConnection();
+	        c = com.denimgroup.stocktrader.ConnectionManager.getManager().getConnection();
 	        if(c != null){       
 	        	Statement s = c.createStatement();
 	        	/* SQL Injection flaw allows sql to be modified by passing sql strings
